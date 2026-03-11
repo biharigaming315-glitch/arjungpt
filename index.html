@@ -1019,46 +1019,6 @@ body {
 
 .guest-btn-detailed:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45); }
 
-/* Supabase Login Button */
-.supabase-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 16px 24px;
-  background: #1e1e2f;
-  border: 1px solid #3b3b5c;
-  border-radius: 12px;
-  color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition);
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.supabase-btn:hover { 
-  transform: translateY(-2px); 
-  background: #2a2a3f;
-  border-color: #F59E0B;
-}
-
-.supabase-icon { 
-  width: 24px; 
-  height: 24px; 
-  flex-shrink: 0;
-  background: #3ecf8e;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-}
-
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1670,12 +1630,7 @@ body {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
-          Continue with Google
-        </button>
-
-        <button class="supabase-btn" id="supabaseLoginBtn">
-          <span class="supabase-icon">⚡</span>
-          Continue with Supabase
+          Continue with Google (Supabase)
         </button>
 
         <button class="guest-btn-detailed" id="guestLoginBtn">
@@ -1928,21 +1883,7 @@ body {
 
 <script>
 // ============================
-// FIREBASE CONFIGURATION
-// ============================
-const firebaseConfig = {
-  apiKey: "AIzaSyCPPKq9K-dzYqfnOmN_4nUsRHBLAY9kBus",
-  authDomain: "jungpt-f4e40.firebaseapp.com",
-  databaseURL: "https://jungpt-f4e40-default-rtdb.firebaseio.com",
-  projectId: "jungpt-f4e40",
-  storageBucket: "jungpt-f4e40.firebasestorage.app",
-  messagingSenderId: "197389009991",
-  appId: "1:197389009991:web:293e51069ef61aead7dd62",
-  measurementId: "G-MT375NCKBK"
-};
-
-// ============================
-// SUPABASE CONFIGURATION
+// SUPABASE CONFIGURATION (Integrated with Google Login)
 // ============================
 const supabaseConfig = {
   url: "https://mjztsifzzgswxcllxwuu.supabase.co",
@@ -1953,22 +1894,9 @@ const supabaseConfig = {
 const ADMIN_EMAIL = "khanshahidkhanshahid96@gmail.com";
 
 // ============================
-// OPENROUTER API CONFIGURATION (SECURELY STORED)
+// OPENROUTER API CONFIGURATION - FIXED API KEY
 // ============================
-// In a production environment, this should be stored in environment variables
-// or fetched from a secure backend. For this demo, we'll use a local variable
-// but hide it from the UI.
-const OPENROUTER_API_KEY = (() => {
-  // This creates a closure that stores the key but doesn't expose it directly
-  // In a real app, you'd want to fetch this from a secure endpoint
-  const key = "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";
-  return {
-    getKey: function() {
-      return key;
-    }
-  };
-})();
-
+const OPENROUTER_API_KEY = "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";
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // ============================
@@ -2088,57 +2016,6 @@ function hideLoginScreen() {
 }
 
 // ============================
-// FIREBASE INITIALIZATION
-// ============================
-function initFirebase() {
-  console.log("🔥 Initializing Firebase...");
-  
-  if (typeof firebase === 'undefined') {
-    console.error("❌ Firebase SDK not loaded!");
-    showToast('Firebase SDK failed to load', 'error');
-    return;
-  }
-  
-  if (firebase.apps.length === 0) {
-    try {
-      firebase.initializeApp(firebaseConfig);
-      console.log("✅ Firebase initialized successfully!");
-      
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          console.log("✅ Auth persistence set to LOCAL");
-          
-          firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-              console.log("✅ User signed in:", user.email);
-              setUser({
-                id: user.uid,
-                name: user.displayName,
-                email: user.email,
-                picture: user.photoURL,
-                provider: 'google'
-              });
-              hideLoginScreen();
-              showToast(`Welcome, ${user.displayName}!`, 'success');
-            } else {
-              console.log("👤 No user signed in");
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("❌ Auth persistence error:", error);
-        });
-
-    } catch(e) {
-      console.error("❌ Firebase init failed:", e);
-      showToast('Firebase initialization failed', 'error');
-    }
-  } else {
-    console.log("🔥 Firebase already initialized");
-  }
-}
-
-// ============================
 // SUPABASE INITIALIZATION
 // ============================
 function initSupabase() {
@@ -2179,52 +2056,10 @@ function initSupabase() {
 }
 
 // ============================
-// GOOGLE LOGIN
+// SUPABASE LOGIN WITH GOOGLE (Integrated)
 // ============================
-function triggerGoogleLogin() {
-  console.log("🟢 Google login clicked");
-  
-  try {
-    if (!firebase.apps.length) {
-      console.error("❌ Firebase not initialized");
-      showToast('Firebase not initialized', 'error');
-      return;
-    }
-    
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    
-    console.log("📤 Opening sign in popup...");
-    
-    firebase.auth().signInWithPopup(provider)
-      .then((result) => {
-        console.log("✅ Sign in successful!", result.user.email);
-      })
-      .catch((error) => {
-        console.error("❌ Sign in failed:", error);
-        
-        if (error.code === 'auth/popup-closed-by-user') {
-          console.log("ℹ️ Popup closed by user");
-          showToast('Login cancelled', 'info');
-        } else if (error.code === 'auth/popup-blocked') {
-          showToast('Popup was blocked by browser. Please allow popups.', 'error');
-        } else if (error.code === 'auth/unauthorized-domain') {
-          showToast('Domain not authorized! Add this domain to Firebase Console.', 'error');
-        } else {
-          showToast('Login failed: ' + error.message, 'error');
-        }
-      });
-  } catch(e) {
-    console.error("❌ Exception:", e);
-    showToast('Login error', 'error');
-  }
-}
-
-// ============================
-// SUPABASE LOGIN WITH GOOGLE
-// ============================
-async function triggerSupabaseLogin() {
-  console.log("⚡ Supabase login clicked");
+async function triggerSupabaseGoogleLogin() {
+  console.log("⚡ Supabase Google login clicked");
   
   try {
     if (!STATE.supabase) {
@@ -2501,7 +2336,7 @@ function scrollToBottom() {
 }
 
 // ============================
-// OPENROUTER API CALL (SECURE)
+// OPENROUTER API CALL - FIXED
 // ============================
 async function callOpenRouterAPI(messages, systemPrompt) {
   try {
@@ -2526,13 +2361,12 @@ async function callOpenRouterAPI(messages, systemPrompt) {
       }
     }
 
-    // Securely get the API key from the closure
-    const apiKey = OPENROUTER_API_KEY.getKey();
+    console.log("Calling OpenRouter API with model:", STATE.settings.model);
 
     const response = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': window.location.origin,
         'X-Title': 'ArjunGpt'
@@ -3025,8 +2859,8 @@ document.getElementById('darkThemeBtn').addEventListener('click', () => {
 document.getElementById('menuToggle').addEventListener('click', openSidebar);
 document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
-document.getElementById('googleLoginBtn').addEventListener('click', triggerGoogleLogin);
-document.getElementById('supabaseLoginBtn').addEventListener('click', triggerSupabaseLogin);
+// Google Login with Supabase Integration
+document.getElementById('googleLoginBtn').addEventListener('click', triggerSupabaseGoogleLogin);
 
 document.getElementById('guestLoginBtn').addEventListener('click', () => {
   setUser({ id: 'guest-' + Date.now(), name: 'Guest', email: '', provider: 'guest' });
@@ -3039,8 +2873,6 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     // Check which provider to logout from
     if (STATE.currentUser?.provider === 'supabase' && STATE.supabase) {
       await supabaseLogout();
-    } else if (typeof firebase !== 'undefined' && firebase.auth) {
-      await firebase.auth().signOut().catch(console.error);
     }
     
     STATE.currentUser = null;
@@ -3077,9 +2909,8 @@ function init() {
   loadSettings();
   loadConversations();
   applyTheme(STATE.settings.theme);
-  initFirebase();
   
-  // Initialize Supabase
+  // Initialize Supabase (only)
   STATE.supabase = initSupabase();
   
   renderHistoryList();
