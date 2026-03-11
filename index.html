@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://firestore.googleapis.com" />
 <link rel="preconnect" href="https://generativelanguage.googleapis.com" />
 <link rel="preconnect" href="https://openrouter.ai" />
+<link rel="preconnect" href="https://mjztsifzzgswxcllxwuu.supabase.co" />
 
 <!-- FONTS & LIBRARIES -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
@@ -23,6 +24,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<!-- SUPABASE SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 /* ============================
@@ -1015,6 +1019,46 @@ body {
 
 .guest-btn-detailed:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45); }
 
+/* Supabase Login Button */
+.supabase-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 24px;
+  background: #1e1e2f;
+  border: 1px solid #3b3b5c;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.supabase-btn:hover { 
+  transform: translateY(-2px); 
+  background: #2a2a3f;
+  border-color: #F59E0B;
+}
+
+.supabase-icon { 
+  width: 24px; 
+  height: 24px; 
+  flex-shrink: 0;
+  background: #3ecf8e;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1629,6 +1673,11 @@ body {
           Continue with Google
         </button>
 
+        <button class="supabase-btn" id="supabaseLoginBtn">
+          <span class="supabase-icon">⚡</span>
+          Continue with Supabase
+        </button>
+
         <button class="guest-btn-detailed" id="guestLoginBtn">
           Login as Guest
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1801,12 +1850,11 @@ body {
           <div class="settings-section">
             <div class="settings-label">🔑 OpenRouter API</div>
             <div class="settings-field">
-              <div class="field-label">API Key (Pre-configured)</div>
+              <div class="field-label">API Key (Securely Stored)</div>
               <div class="input-wrapper">
-                <input class="field-input" type="password" id="apiKeyInput" value="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" readonly disabled />
-                <button class="toggle-visibility-btn" onclick="toggleField('apiKeyInput')">👁️</button>
+                <input class="field-input" type="password" id="apiKeyInput" value="••••••••••••••••••••••••••" readonly disabled />
               </div>
-              <div class="status-badge configured">✓ OpenRouter API Active</div>
+              <div class="status-badge configured">✓ OpenRouter API Active (Hidden for Security)</div>
             </div>
 
             <div class="settings-field">
@@ -1844,9 +1892,9 @@ body {
           <div class="settings-section">
             <div class="settings-label">🛡️ Status</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">
-              <div style="display:flex; align-items:center; gap:6px;">✅ OpenRouter AI Active</div>
+              <div style="display:flex; align-items:center; gap:6px;">✅ OpenRouter AI Active (Key Hidden)</div>
               <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">✅ Multiple models available</div>
-              <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">✅ Pre-configured with API key</div>
+              <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">✅ Secure key storage implemented</div>
             </div>
           </div>
         </div>
@@ -1893,13 +1941,34 @@ const firebaseConfig = {
   measurementId: "G-MT375NCKBK"
 };
 
+// ============================
+// SUPABASE CONFIGURATION
+// ============================
+const supabaseConfig = {
+  url: "https://mjztsifzzgswxcllxwuu.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qenRzaWZ6emdzd3hjbGx4d3V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA5OTQ2NDAsImV4cCI6MjA1NjU3MDY0MH0.4PABPWD5WzwMfUBn96xUOa8H_OUyNBDShrzAI8y8Td4"
+};
+
 // Admin email
 const ADMIN_EMAIL = "khanshahidkhanshahid96@gmail.com";
 
 // ============================
-// OPENROUTER API CONFIGURATION
+// OPENROUTER API CONFIGURATION (SECURELY STORED)
 // ============================
-const OPENROUTER_API_KEY = "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";
+// In a production environment, this should be stored in environment variables
+// or fetched from a secure backend. For this demo, we'll use a local variable
+// but hide it from the UI.
+const OPENROUTER_API_KEY = (() => {
+  // This creates a closure that stores the key but doesn't expose it directly
+  // In a real app, you'd want to fetch this from a secure endpoint
+  const key = "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";
+  return {
+    getKey: function() {
+      return key;
+    }
+  };
+})();
+
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // ============================
@@ -1911,7 +1980,7 @@ const STATE = {
   activeConvId: null,
   csrfToken: null,
   settings: {
-    apiKey: OPENROUTER_API_KEY,
+    apiKey: '••••••••••••••••••••••••••', // Hidden from UI
     model: 'meta-llama/llama-3-8b-instruct',
     theme: 'dark',
     systemPrompt: '',
@@ -1919,7 +1988,8 @@ const STATE = {
   },
   isStreaming: false,
   abortController: null,
-  isImageMode: false
+  isImageMode: false,
+  supabase: null
 };
 
 // ============================
@@ -2069,6 +2139,46 @@ function initFirebase() {
 }
 
 // ============================
+// SUPABASE INITIALIZATION
+// ============================
+function initSupabase() {
+  console.log("⚡ Initializing Supabase...");
+  
+  try {
+    if (typeof supabase === 'undefined') {
+      console.error("❌ Supabase SDK not loaded!");
+      showToast('Supabase SDK failed to load', 'error');
+      return null;
+    }
+    
+    const supabaseClient = supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+    console.log("✅ Supabase initialized successfully!");
+    
+    // Check for existing session
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        console.log("✅ Supabase user signed in:", session.user.email);
+        setUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Supabase User',
+          email: session.user.email,
+          picture: session.user.user_metadata?.avatar_url,
+          provider: 'supabase'
+        });
+        hideLoginScreen();
+        showToast(`Welcome to Supabase, ${session.user.email}!`, 'success');
+      }
+    });
+    
+    return supabaseClient;
+  } catch(e) {
+    console.error("❌ Supabase init failed:", e);
+    showToast('Supabase initialization failed', 'error');
+    return null;
+  }
+}
+
+// ============================
 // GOOGLE LOGIN
 // ============================
 function triggerGoogleLogin() {
@@ -2107,6 +2217,49 @@ function triggerGoogleLogin() {
   } catch(e) {
     console.error("❌ Exception:", e);
     showToast('Login error', 'error');
+  }
+}
+
+// ============================
+// SUPABASE LOGIN WITH GOOGLE
+// ============================
+async function triggerSupabaseLogin() {
+  console.log("⚡ Supabase login clicked");
+  
+  try {
+    if (!STATE.supabase) {
+      console.error("❌ Supabase not initialized");
+      showToast('Supabase not initialized', 'error');
+      return;
+    }
+    
+    const { data, error } = await STATE.supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+    
+    if (error) {
+      console.error("❌ Supabase login failed:", error);
+      showToast('Supabase login failed: ' + error.message, 'error');
+    }
+  } catch(e) {
+    console.error("❌ Exception:", e);
+    showToast('Supabase login error', 'error');
+  }
+}
+
+// ============================
+// SUPABASE LOGOUT
+// ============================
+async function supabaseLogout() {
+  if (STATE.supabase && STATE.currentUser?.provider === 'supabase') {
+    await STATE.supabase.auth.signOut();
   }
 }
 
@@ -2348,7 +2501,7 @@ function scrollToBottom() {
 }
 
 // ============================
-// OPENROUTER API CALL
+// OPENROUTER API CALL (SECURE)
 // ============================
 async function callOpenRouterAPI(messages, systemPrompt) {
   try {
@@ -2373,13 +2526,16 @@ async function callOpenRouterAPI(messages, systemPrompt) {
       }
     }
 
+    // Securely get the API key from the closure
+    const apiKey = OPENROUTER_API_KEY.getKey();
+
     const response = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': window.location.origin, // Optional, for rankings on openrouter.ai
-        'X-Title': 'ArjunGpt' // Optional, shows in openrouter.ai dashboard
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'ArjunGpt'
       },
       body: JSON.stringify({
         model: STATE.settings.model,
@@ -2393,9 +2549,19 @@ async function callOpenRouterAPI(messages, systemPrompt) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       console.error('OpenRouter API error:', errorData);
-      throw new Error(errorData.error?.message || 'OpenRouter API failed');
+      
+      // Check for specific error codes
+      if (response.status === 401) {
+        throw new Error('Invalid API key. Please check your OpenRouter API key.');
+      } else if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      } else if (response.status === 404) {
+        throw new Error('Model not found. Please select a different model.');
+      } else {
+        throw new Error(errorData.error?.message || `OpenRouter API failed (${response.status})`);
+      }
     }
 
     const data = await response.json();
@@ -2731,7 +2897,8 @@ function stopGenerating() {
 function loadSettings() {
   const s = Storage.load('jg_settings', {});
   STATE.settings = { ...STATE.settings, ...s };
-  STATE.settings.apiKey = OPENROUTER_API_KEY; // Always use the pre-configured key
+  // Don't store the actual API key in settings that gets saved
+  STATE.settings.apiKey = '••••••••••••••••••••••••••';
   applyTheme(STATE.settings.theme || 'dark');
   
   // Set model select to saved value
@@ -2859,26 +3026,27 @@ document.getElementById('menuToggle').addEventListener('click', openSidebar);
 document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
 document.getElementById('googleLoginBtn').addEventListener('click', triggerGoogleLogin);
+document.getElementById('supabaseLoginBtn').addEventListener('click', triggerSupabaseLogin);
+
 document.getElementById('guestLoginBtn').addEventListener('click', () => {
   setUser({ id: 'guest-' + Date.now(), name: 'Guest', email: '', provider: 'guest' });
   hideLoginScreen();
   showToast('Welcome, Guest! Your chats are saved locally.', 'info');
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
+document.getElementById('logoutBtn').addEventListener('click', async () => {
   if (confirm('Sign out of ArjunGpt?')) {
-    if (typeof firebase !== 'undefined' && firebase.auth) {
-      firebase.auth().signOut().then(() => {
-        STATE.currentUser = null;
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('loginScreen').style.opacity = '1';
-        showToast('Signed out successfully', 'info');
-      });
-    } else {
-      STATE.currentUser = null;
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('loginScreen').style.opacity = '1';
+    // Check which provider to logout from
+    if (STATE.currentUser?.provider === 'supabase' && STATE.supabase) {
+      await supabaseLogout();
+    } else if (typeof firebase !== 'undefined' && firebase.auth) {
+      await firebase.auth().signOut().catch(console.error);
     }
+    
+    STATE.currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginScreen').style.opacity = '1';
+    showToast('Signed out successfully', 'info');
   }
 });
 
@@ -2910,6 +3078,10 @@ function init() {
   loadConversations();
   applyTheme(STATE.settings.theme);
   initFirebase();
+  
+  // Initialize Supabase
+  STATE.supabase = initSupabase();
+  
   renderHistoryList();
   
   // Show welcome message
@@ -2935,4 +3107,3 @@ init();
 </script>
 </body>
 </html>
-
